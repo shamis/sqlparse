@@ -143,7 +143,7 @@ function init(json){
             style.cursor = 'pointer';
             style.color = '#fff';
             //style.backgroundColor = '#1a1a1a';
-            style.fontSize = '0.8em';
+            style.fontSize = '1em';
             style.textAlign= 'center';
             //style.textDecoration = 'underline';
             style.paddingTop = '3px';
