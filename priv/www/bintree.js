@@ -28,6 +28,8 @@ var Log = {
 
 function init(json){
     //A client-side tree generator
+    document.getElementById("infovis").innerHTML = "";
+
     var getTree = (function() {
         var i = 0;
         return function(nodeId, level) {
