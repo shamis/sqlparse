@@ -27,14 +27,6 @@ a {
     color:#23A4FF;
 }
 
-#container {
-    width: 100%;
-    height: 100%;
-    margin:0 auto;
-    position:relative;
-}
-
-#json-container, 
 #banner-container, 
 #tree-container {
     width:100%;
@@ -42,7 +34,7 @@ a {
     top:0;
 }
 
-#json-container, #banner-container {
+#banner-container {
     color:#686c70;
     text-align: left;
     overflow: auto;
@@ -50,21 +42,15 @@ a {
     background-repeat:no-repeat;
 }
 
-#json-container {
-    left:0;
-    height:300px;
-}
-
 #banner-container {
     right:0;
-    top:300px;
+    top:0px;
 }
 
 #tree-container {
     background-color:#ffffff;
     color:#ccc;
-    top:301px;
-    height:900px;
+    top:1px;
 }
 
 .text {
@@ -77,19 +63,10 @@ a {
     margin:7px;
 }
 
-#log {
-    position:absolute;
-    top:10px;
-    font-size:1.0em;
-    font-weight:bold;
-    color:#23A4FF;
-}
-
-
 #infovis {
     position:relative;
     width:100%;
-    height:900px;
+    height:1000px;
     margin:auto;
     overflow:auto;
 }

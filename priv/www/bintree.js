@@ -15,18 +15,26 @@ var labelType, useGradients, nativeTextSupport, animate;
   animate = !(iStuff || !nativeCanvasSupport);
 })();
 
-var Log = {
-  elem: false,
-  write: function(text){
-    if (!this.elem) 
-      this.elem = document.getElementById('log');
-    this.elem.innerHTML = text;
-    this.elem.style.left = (500 - this.elem.offsetWidth / 2) + 'px';
-  }
-};
-
+function loadsql()
+{
+    var fileref = document.getElementById("sqlscript");
+    if(fileref != null) {
+        parsetree = null;
+        fileref.parentNode.removeChild(fileref);
+    }
+    
+    var fileref=document.createElement('script');
+    fileref.setAttribute("type","text/javascript");
+    fileref.setAttribute("src", "sql.js?" + Math.floor((Math.random()*10)+1));
+    fileref.setAttribute("id", "sqlscript");
+    fileref.onload = function() {
+        init(parsetree.json());
+    }
+    document.getElementsByTagName("head")[0].appendChild(fileref);
+}
 
 function init(json){
+    //json = document.getElementById("tree-dom").value;
     //A client-side tree generator
     document.getElementById("infovis").innerHTML = "";
 
@@ -119,14 +127,6 @@ function init(json){
           onComplete.onComplete(nodeId, ans);  
         },*/
         
-        onBeforeCompute: function(node){
-            Log.write("loading " + node.name);
-        },
-        
-        onAfterCompute: function(){
-            Log.write("done");
-        },
-        
         //This method is called on DOM label creation.
         //Use this method to add event handlers and styles to
         //your node.
@@ -182,7 +182,8 @@ function init(json){
         }
     });
     //load json data
-    st.loadJSON(eval( '(' + json + ')' ));
+    //st.loadJSON(eval( '(' + json + ')' ));
+    st.loadJSON(json);
     //compute node positions and layout
     st.compute();
     //emulate a click on the root node.
