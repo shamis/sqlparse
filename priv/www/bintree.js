@@ -25,34 +25,19 @@ function loadsql()
     
     var fileref=document.createElement('script');
     fileref.setAttribute("type","text/javascript");
-    fileref.setAttribute("src", "sql.js?" + Math.floor((Math.random()*10)+1));
+    fileref.setAttribute("src", "sql.js?" + Math.floor((Math.random()*1000)+1));
     fileref.setAttribute("id", "sqlscript");
     fileref.onload = function() {
-        init(parsetree.json());
+        document.getElementById("sqltext").innerHTML = parsetree.sql();
+        reload_tree(parsetree.json());
     }
     document.getElementsByTagName("head")[0].appendChild(fileref);
 }
 
-function init(json){
-    //json = document.getElementById("tree-dom").value;
+function reload_tree(json){
     //A client-side tree generator
     document.getElementById("infovis").innerHTML = "";
 
-    var getTree = (function() {
-        var i = 0;
-        return function(nodeId, level) {
-          var subtree = eval('(' + json.replace(/id:\"([a-zA-Z0-9]+)\"/g, 
-          function(all, match) {
-            return "id:\"" + match + "_" + i + "\""  
-          }) + ')');
-          $jit.json.prune(subtree, level); i++;
-          return {
-              'id': nodeId,
-              'children': subtree.children
-          };
-        };
-    })();
-    
     //Implement a node rendering function called 'nodeline' that plots a straight line
     //when contracting or expanding a subtree.
     $jit.ST.Plot.NodeTypes.implement({
@@ -75,7 +60,6 @@ function init(json){
               } 
           }
         }
-          
     });
 
     //init Spacetree
@@ -91,10 +75,12 @@ function init(json){
         levelDistance: 20,
         //set max levels to show. Useful when used with
         //the request method for requesting trees of specific depth
-        levelsToShow: 100,
+        constrained: false,
+        levelsToShow: 1000,
         //set node and edge styles
         //set overridable=true for styling individual
         //nodes or edges
+        offsetY: 200,
         Node: {
             height: 20,
             width: 90,
@@ -113,19 +99,6 @@ function init(json){
             color:'#23A4FF',
             overridable: true
         },
-        
-        //Add a request method for requesting on-demand json trees. 
-        //This method gets called when a node
-        //is clicked and its subtree has a smaller depth
-        //than the one specified by the levelsToShow parameter.
-        //In that case a subtree is requested and is added to the dataset.
-        //This method is asynchronous, so you can make an Ajax request for that
-        //subtree and then handle it to the onComplete callback.
-        //Here we just use a client-side tree generator (the getTree function).
-        /*request: function(nodeId, level, onComplete) {
-          var ans = getTree(nodeId, level);
-          onComplete.onComplete(nodeId, ans);  
-        },*/
         
         //This method is called on DOM label creation.
         //Use this method to add event handlers and styles to
@@ -188,28 +161,5 @@ function init(json){
     st.compute();
     //emulate a click on the root node.
     st.onClick(st.root);
-    //end
-    //Add event handlers to switch spacetree orientation.
-   function get(id) {
-      return document.getElementById(id);  
-    };
-
-    var top = get('r-top'), 
-    left = get('r-left'), 
-    bottom = get('r-bottom'), 
-    right = get('r-right');
-    
-    function changeHandler() {
-        if(this.checked) {
-            top.disabled = bottom.disabled = right.disabled = left.disabled = true;
-            st.switchPosition(this.value, "animate", {
-                onComplete: function(){
-                    top.disabled = bottom.disabled = right.disabled = left.disabled = false;
-                }
-            });
-        }
-    };
-    
-    top.onchange = left.onchange = bottom.onchange = right.onchange = changeHandler;
     //end
 }
