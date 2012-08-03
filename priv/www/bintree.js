@@ -15,8 +15,36 @@ var labelType, useGradients, nativeTextSupport, animate;
   animate = !(iStuff || !nativeCanvasSupport);
 })();
 
+function loadsqlfiles()
+{    
+    var fileref = document.getElementById("sqlscriptfiles");
+    if(fileref != null) {
+        sqlFiles = null;
+        fileref.parentNode.removeChild(fileref);
+    }
+    
+    var fileref=document.createElement('script');
+    fileref.setAttribute("type","text/javascript");
+    fileref.setAttribute("src", "sqls.js?" + Math.floor((Math.random()*1000)+1));
+    fileref.setAttribute("id", "sqlscriptfiles");
+    fileref.onload = function() {
+        var qfilesList = document.getElementById("qfiles");
+        qfilesList.innerHTML = "";
+        for(var i=0; i < sqlFiles.length; ++i) {
+            var opt=document.createElement('option');
+            opt.setAttribute("value", sqlFiles[i]);
+            opt.innerHTML = sqlFiles[i];
+            qfilesList.appendChild(opt); 
+        }
+    }
+    document.getElementsByTagName("head")[0].appendChild(fileref);
+}
+
 function loadsql()
-{
+{    
+    var e = document.getElementById("qfiles");
+    var file = e.options[e.selectedIndex].value;
+    
     var fileref = document.getElementById("sqlscript");
     if(fileref != null) {
         parsetree = null;
@@ -25,8 +53,8 @@ function loadsql()
     
     var fileref=document.createElement('script');
     fileref.setAttribute("type","text/javascript");
-    fileref.setAttribute("src", "sql.js?" + Math.floor((Math.random()*1000)+1));
-    fileref.setAttribute("id", "sqlscript");
+    fileref.setAttribute("src", file + "?" + Math.floor((Math.random()*1000)+1));
+    fileref.setAttribute("id", "sqlscriptfiles");
     fileref.onload = function() {
         document.getElementById("sqltext").innerHTML = parsetree.sql();
         reload_tree(parsetree.json());

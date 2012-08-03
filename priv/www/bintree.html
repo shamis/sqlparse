@@ -23,7 +23,9 @@
 </div>
 
 <div id="banner-container">
-    <input type='button' onclick='loadsql();' value="Reload" />
+    <input type='button' onclick='loadsqlfiles()' value="Reload List" />
+    <select id="qfiles" onChange='loadsql()'></select>
+    <input type='button' onclick='loadsql()' value="Load" />
     <pre id="sqltext" style="font-family:courier; font-size:14pt;"></pre>
 </div>
 
