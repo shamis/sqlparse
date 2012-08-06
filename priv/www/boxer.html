@@ -2,9 +2,29 @@
     <head>
         <script language="javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
         <script language="javascript" src="boxer.js"></script>
+        <style>
+            #container {
+                background-color: rgb(255,255,0);
+                position:absolute;
+                width:99%;
+                height:900px;
+                left:10px;
+                top:10px;
+                overflow:auto
+            }
+
+            .inner_div {
+                min-height:20px;
+                position:absolute;
+                width:500px;
+                height:20px;
+                border:1px solid;
+                overflow:hidden;
+            }
+
+        </style>
     </head>
 <body>
-    <input type=button value="Click me" onclick="test()"/>
     <div id="container"/>
 </body>
 
