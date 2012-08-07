@@ -4,48 +4,85 @@ var treeroot =
              top : 0,
              height : 0,
              children: [ { name : "",
-                           height : 0,
-                           top : 0,
                            display: iniDisplay,
                            children: [
-                               { name : "atom", height : 0, top : 0, display: iniDisplay, children: []}
-                               , { name : "big", height : 0, top : 0, display: iniDisplay, children: []}
-                               , { name : "cool", height : 0, top : 0, display: iniDisplay, children: []}]
+                               { name : "atom", display: iniDisplay, children: []}
+                               , { name : "big", display: iniDisplay, children: []}
+                               , { name : "cool", display: iniDisplay, children: []}]
                          },
                          { name : "from",
-                           height : 0,
-                           top : 0,
                            display: iniDisplay,
                            children: [
-                               { name : "apple", height : 0, top : 0, display: iniDisplay, children: []}
-                               , { name : "ball", height : 0, top : 0, display: iniDisplay, children: []}
-                               , { name : "cat", height : 0, top : 0, display: iniDisplay, children: []}]
+                               { name : "apple", display: iniDisplay, children: []}
+                               , { name : "ball", display: iniDisplay, children: []}
+                               , { name : "cat", display: iniDisplay, children: []}]
                          },
                          { name : "where",
-                           height : 0,
-                           top : 0,
                            display: iniDisplay,
                            children: [
                                { name : "",
-                                 height : 0,
-                                 top : 0,
                                  display: iniDisplay,
                                  children: [
-                                     { name : "man", height : 0, top : 0, display: iniDisplay, children: []},
-                                     { name : "=", height : 0, top : 0, display: iniDisplay, children: []},
-                                     { name : "monkey", height : 0, top : 0, display: iniDisplay, children: []}]
+                                     { name : "man", display: iniDisplay, children: []},
+                                     { name : "=", display: iniDisplay, children: []},
+                                     { name : "monkey", display: iniDisplay, children: []}]
                                },
                                { name : "and",
-                                 height : 0,
-                                 top : 0,
                                  display: iniDisplay,
                                  children: [
-                                     { name : "woman", height : 0, top : 0, display: iniDisplay, children: []},
-                                     { name : "=", height : 0, top : 0, display: iniDisplay, children: []},
-                                     { name : "ape", height : 0, top : 0, display: iniDisplay, children: []}]
+                                     { name : "woman", display: iniDisplay, children: []},
+                                     { name : "=", display: iniDisplay, children: []},
+                                     { name : "ape", display: iniDisplay, children: []}]
                                }]
                          }]
            };
+
+function loadsqlfiles()
+{    
+    var fileref = document.getElementById("sqlscriptfiles");
+    if(fileref != null) {
+        sqlFiles = null;
+        fileref.parentNode.removeChild(fileref);
+    }
+    
+    var fileref=document.createElement('script');
+    fileref.setAttribute("type","text/javascript");
+    fileref.setAttribute("src", "sqls.js?" + Math.floor((Math.random()*1000)+1));
+    fileref.setAttribute("id", "sqlscriptfiles");
+    fileref.onload = function() {
+        var qfilesList = document.getElementById("qfiles");
+        qfilesList.innerHTML = "";
+        for(var i=0; i < sqlFiles.length; ++i) {
+            var opt=document.createElement('option');
+            opt.setAttribute("value", sqlFiles[i]);
+            opt.innerHTML = sqlFiles[i];
+            qfilesList.appendChild(opt); 
+        }
+    }
+    document.getElementsByTagName("head")[0].appendChild(fileref);
+}
+
+function loadsql()
+{    
+    var e = document.getElementById("qfiles");
+    var file = e.options[e.selectedIndex].value;
+    
+    var fileref = document.getElementById("sqlscript");
+    if(fileref != null) {
+        parsetree = null;
+        fileref.parentNode.removeChild(fileref);
+    }
+    
+    var fileref=document.createElement('script');
+    fileref.setAttribute("type","text/javascript");
+    fileref.setAttribute("src", file + "?" + Math.floor((Math.random()*1000)+1));
+    fileref.setAttribute("id", "sqlscriptfiles");
+    fileref.onload = function() {
+        document.getElementById("sqltext").innerHTML = parsetree.sql();
+        reload_tree(parsetree.json());
+    }
+    document.getElementsByTagName("head")[0].appendChild(fileref);
+}
 
 function build_boxes(tree)
 {
@@ -58,6 +95,8 @@ function prep_tree(tree)
     if(tree.name.length > 0)
         tree.height = def_height;
     for (var i=0; i < tree.children.length ; ++i) {
+        tree.children[i]["top"] = 0;
+        tree.children[i]["height"] = 0;
         if(i == 0 ) {
             if(tree.name.length > 0) tree.children[i].top = def_height;
         } else
