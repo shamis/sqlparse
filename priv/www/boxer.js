@@ -127,22 +127,6 @@ function build_boxes_r(tree, parent_node, left, depth) {
     editbx.height(tree.height - def_height);
 }
 
-function get_node_bottom(n)
-{
-    var last_child = (n.children().length > 0 ? $(n.children()[n.children().length - 1]) : null);
-    if(last_child != null)
-        console.log(' get_node_bottom ' + last_child.attr('id') + ' ' + last_child.position().top + ' ' + last_child.height());
-    else
-        console.log(' get_node_bottom ' + n.attr('id'));
-    return ((n.attr('id') == undefined
-            ? 0
-            : def_height)
-           +
-            (last_child != null
-            ? last_child.position().top + last_child.height()
-            : 0));
-}
-
 $(document).ready(function()
 {
     loadsqlfiles();
