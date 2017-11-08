@@ -69,14 +69,14 @@ state 878 contains 3 shift/reduce conflicts.
 state 881 contains 2 shift/reduce conflicts.
 state 884 contains 2 shift/reduce conflicts.
 state 885 contains 3 shift/reduce conflicts.
+state 957 contains 2 shift/reduce conflicts.
 state 958 contains 2 shift/reduce conflicts.
-state 959 contains 2 shift/reduce conflicts.
-state 961 contains 3 shift/reduce conflicts.
-state 963 contains 2 shift/reduce conflicts.
-state 967 contains 2 shift/reduce conflicts.
+state 960 contains 3 shift/reduce conflicts.
+state 962 contains 2 shift/reduce conflicts.
+state 966 contains 2 shift/reduce conflicts.
+state 974 contains 2 shift/reduce conflicts.
 state 975 contains 2 shift/reduce conflicts.
 state 976 contains 2 shift/reduce conflicts.
-state 977 contains 2 shift/reduce conflicts.
 
 -----------------------------------------------------------------------------
 Grammar
@@ -165,11 +165,11 @@ Grammar
 	CreateIndexOpts -> 'UNIQUE'                        (81)
 	IndexName -> 'NAME'                                (82)
 	IndexName -> 'NAME' '.' 'NAME'                     (83)
-	CreateIndexSpec -> '(' CreateIndexSpecitems ')'    (84)
-	CreateIndexSpecitems -> 'NAME'                     (85)
-	CreateIndexSpecitems -> 'NAME' '|' CreateIndexSpecitems   (86)
-	CreateIndexSpecitems -> 'JSON'                     (87)
-	CreateIndexSpecitems -> 'JSON' '|' CreateIndexSpecitems   (88)
+	CreateIndexSpec -> '(' CreateIndexSpecItems ')'    (84)
+	CreateIndexSpecItems -> CreateIndexSpecColumn      (85)
+	CreateIndexSpecItems -> CreateIndexSpecColumn ',' CreateIndexSpecItems   (86)
+	CreateIndexSpecColumn -> 'NAME'                    (87)
+	CreateIndexSpecColumn -> 'NAME' 'JSON'             (88)
 	CreateIndexNorm -> 'NORM_WITH' 'STRING'            (89)
 	CreateIndexFilter -> 'FILTER_WITH' 'STRING'        (90)
 	CreateOpts -> TblType                              (91)
@@ -817,8 +817,7 @@ Terminals
 	'WITH'         { PT _ (TS _ 159) }
 	'WORK'         { PT _ (TS _ 160) }
 	'div'          { PT _ (TS _ 161) }
-	'|'            { PT _ (TS _ 162) }
-	'||'           { PT _ (TS _ 163) }
+	'||'           { PT _ (TS _ 162) }
 
 -----------------------------------------------------------------------------
 Non-terminals
@@ -842,7 +841,8 @@ Non-terminals
 	CreateIndexOpts rules 78, 79, 80, 81
 	IndexName       rules 82, 83
 	CreateIndexSpec rule  84
-	CreateIndexSpecitems rules 85, 86, 87, 88
+	CreateIndexSpecItems rules 85, 86
+	CreateIndexSpecColumn rules 87, 88
 	CreateIndexNorm rule  89
 	CreateIndexFilter rule  90
 	CreateOpts      rules 91, 92, 93
@@ -11809,12 +11809,12 @@ State 485
 
 State 486
 
-	CreateIndexSpec -> '(' . CreateIndexSpecitems ')'    (rule 84)
+	CreateIndexSpec -> '(' . CreateIndexSpecItems ')'    (rule 84)
 
-	'JSON'         shift, and enter state 737
 	'NAME'         shift, and enter state 738
 
-	CreateIndexSpecitemsgoto state 736
+	CreateIndexSpecItemsgoto state 736
+	CreateIndexSpecColumngoto state 737
 
 State 487
 
@@ -18883,27 +18883,28 @@ State 735
 
 State 736
 
-	CreateIndexSpec -> '(' CreateIndexSpecitems . ')'    (rule 84)
+	CreateIndexSpec -> '(' CreateIndexSpecItems . ')'    (rule 84)
 
 	')'            shift, and enter state 807
 
 
 State 737
 
-	CreateIndexSpecitems -> 'JSON' .                    (rule 87)
-	CreateIndexSpecitems -> 'JSON' . '|' CreateIndexSpecitems    (rule 88)
+	CreateIndexSpecItems -> CreateIndexSpecColumn .     (rule 85)
+	CreateIndexSpecItems -> CreateIndexSpecColumn . ',' CreateIndexSpecItems    (rule 86)
 
-	')'            reduce using rule 87
-	'|'            shift, and enter state 806
+	')'            reduce using rule 85
+	','            shift, and enter state 806
 
 
 State 738
 
-	CreateIndexSpecitems -> 'NAME' .                    (rule 85)
-	CreateIndexSpecitems -> 'NAME' . '|' CreateIndexSpecitems    (rule 86)
+	CreateIndexSpecColumn -> 'NAME' .                   (rule 87)
+	CreateIndexSpecColumn -> 'NAME' . 'JSON'            (rule 88)
 
-	')'            reduce using rule 85
-	'|'            shift, and enter state 805
+	')'            reduce using rule 87
+	','            reduce using rule 87
+	'JSON'         shift, and enter state 805
 
 
 State 739
@@ -19346,7 +19347,7 @@ State 774
 	'AUTHENTICATION'shift, and enter state 776
 	%eof           reduce using rule 112
 
-	ProxyAuthReq   goto state 939
+	ProxyAuthReq   goto state 938
 
 State 775
 
@@ -19360,14 +19361,14 @@ State 776
 
 	ProxyAuthReq -> 'AUTHENTICATION' . 'REQUIRED'       (rule 118)
 
-	'REQUIRED'     shift, and enter state 938
+	'REQUIRED'     shift, and enter state 937
 
 
 State 777
 
 	ProxyClause -> 'REVOKE' 'CONNECT' 'THROUGH' 'ENTERPRISE' . 'USERS'    (rule 110)
 
-	'USERS'        shift, and enter state 937
+	'USERS'        shift, and enter state 936
 
 
 State 778
@@ -19376,8 +19377,8 @@ State 778
 	ProxyWith -> 'WITH' . 'ROLE' RoleList               (rule 116)
 	ProxyWith -> 'WITH' . 'ROLE' 'ALL' 'EXCEPT' RoleList    (rule 117)
 
-	'NO'           shift, and enter state 935
-	'ROLE'         shift, and enter state 936
+	'NO'           shift, and enter state 934
+	'ROLE'         shift, and enter state 935
 
 
 State 779
@@ -19392,7 +19393,7 @@ State 780
 
 	ProxyClause -> 'GRANT' 'CONNECT' 'THROUGH' 'ENTERPRISE' . 'USERS'    (rule 108)
 
-	'USERS'        shift, and enter state 934
+	'USERS'        shift, and enter state 933
 
 
 State 781
@@ -19414,7 +19415,7 @@ State 782
 
 	Quota -> 'QUOTA' 'INTNUM' 'NAME' 'ON' . 'NAME'      (rule 145)
 
-	'NAME'         shift, and enter state 933
+	'NAME'         shift, and enter state 932
 
 
 State 783
@@ -19438,7 +19439,7 @@ State 784
 
 	'NAME'         shift, and enter state 765
 
-	RoleList       goto state 932
+	RoleList       goto state 931
 
 State 785
 
@@ -19446,7 +19447,7 @@ State 785
 
 	'NAME'         shift, and enter state 765
 
-	RoleList       goto state 931
+	RoleList       goto state 930
 
 State 786
 
@@ -19522,10 +19523,10 @@ State 790
 	DataType -> 'NAME' '(' . SgnNum ')'                 (rule 561)
 	DataType -> 'NAME' '(' . SgnNum ',' SgnNum ')'      (rule 562)
 
-	'-'            shift, and enter state 929
-	'INTNUM'       shift, and enter state 930
+	'-'            shift, and enter state 928
+	'INTNUM'       shift, and enter state 929
 
-	SgnNum         goto state 928
+	SgnNum         goto state 927
 
 State 791
 
@@ -19539,7 +19540,7 @@ State 791
 	'NOT'          shift, and enter state 795
 	'REFERENCES'   shift, and enter state 796
 
-	ColumnDefOpt   goto state 927
+	ColumnDefOpt   goto state 926
 
 State 792
 
@@ -19557,7 +19558,7 @@ State 793
 
 	ColumnDefOpt -> 'CHECK' . '(' SearchCondition ')'    (rule 167)
 
-	'('            shift, and enter state 926
+	'('            shift, and enter state 925
 
 
 State 794
@@ -19571,13 +19572,13 @@ State 794
 	'APPROXNUM'    shift, and enter state 88
 	'FUNS'         shift, and enter state 91
 	'INTNUM'       shift, and enter state 93
-	'NAME'         shift, and enter state 923
-	'NULL'         shift, and enter state 924
+	'NAME'         shift, and enter state 922
+	'NULL'         shift, and enter state 923
 	'STRING'       shift, and enter state 97
-	'USER'         shift, and enter state 925
+	'USER'         shift, and enter state 924
 
-	FunctionRef    goto state 921
-	Literal        goto state 922
+	FunctionRef    goto state 920
+	Literal        goto state 921
 
 State 795
 
@@ -19585,7 +19586,7 @@ State 795
 	ColumnDefOpt -> 'NOT' . 'NULL' 'UNIQUE'             (rule 160)
 	ColumnDefOpt -> 'NOT' . 'NULL' 'PRIMARY' 'KEY'      (rule 161)
 
-	'NULL'         shift, and enter state 920
+	'NULL'         shift, and enter state 919
 
 
 State 796
@@ -19597,7 +19598,7 @@ State 796
 	'PARAMETER'    shift, and enter state 61
 	'STRING'       shift, and enter state 62
 
-	Table          goto state 919
+	Table          goto state 918
 	Parameter      goto state 59
 
 State 797
@@ -19606,7 +19607,7 @@ State 797
 	SearchCondition -> SearchCondition . 'OR' SearchCondition    (rule 439)
 	SearchCondition -> SearchCondition . 'AND' SearchCondition    (rule 440)
 
-	')'            shift, and enter state 918
+	')'            shift, and enter state 917
 	'AND'          shift, and enter state 566
 	'OR'           shift, and enter state 567
 
@@ -19619,7 +19620,7 @@ State 798
 	'NAME'         shift, and enter state 271
 	'STRING'       shift, and enter state 272
 
-	ColumnCommalistgoto state 917
+	ColumnCommalistgoto state 916
 	Column         goto state 414
 
 State 799
@@ -19629,14 +19630,14 @@ State 799
 	'NAME'         shift, and enter state 271
 	'STRING'       shift, and enter state 272
 
-	ColumnCommalistgoto state 916
+	ColumnCommalistgoto state 915
 	Column         goto state 414
 
 State 800
 
 	TableConstraintDef -> 'UNIQUE' '(' ColumnCommalist . ')'    (rule 170)
 
-	')'            shift, and enter state 915
+	')'            shift, and enter state 914
 
 
 State 801
@@ -19660,7 +19661,7 @@ State 802
 	'FILTER_WITH'  shift, and enter state 487
 	%eof           reduce using rule 60
 
-	CreateIndexFiltergoto state 914
+	CreateIndexFiltergoto state 913
 
 State 803
 
@@ -19684,25 +19685,24 @@ State 804
 
 State 805
 
-	CreateIndexSpecitems -> 'NAME' '|' . CreateIndexSpecitems    (rule 86)
+	CreateIndexSpecColumn -> 'NAME' 'JSON' .            (rule 88)
 
-	'JSON'         shift, and enter state 737
-	'NAME'         shift, and enter state 738
+	')'            reduce using rule 88
+	','            reduce using rule 88
 
-	CreateIndexSpecitemsgoto state 913
 
 State 806
 
-	CreateIndexSpecitems -> 'JSON' '|' . CreateIndexSpecitems    (rule 88)
+	CreateIndexSpecItems -> CreateIndexSpecColumn ',' . CreateIndexSpecItems    (rule 86)
 
-	'JSON'         shift, and enter state 737
 	'NAME'         shift, and enter state 738
 
-	CreateIndexSpecitemsgoto state 912
+	CreateIndexSpecItemsgoto state 912
+	CreateIndexSpecColumngoto state 737
 
 State 807
 
-	CreateIndexSpec -> '(' CreateIndexSpecitems ')' .    (rule 84)
+	CreateIndexSpec -> '(' CreateIndexSpecItems ')' .    (rule 84)
 
 	';'            reduce using rule 84
 	'AS'           reduce using rule 84
@@ -21970,14 +21970,14 @@ State 875
 	'RETURNING'    shift, and enter state 377
 	%eof           reduce using rule 297
 
-	Returning      goto state 970
+	Returning      goto state 969
 
 State 876
 
 	QueryPartitionClause -> 'PARTITION' 'BY' '(' ScalarExpCommalist . ')'    (rule 414)
 	ScalarExpCommalist -> ScalarExpCommalist . ',' ScalarOptAsExp    (rule 503)
 
-	')'            shift, and enter state 969
+	')'            shift, and enter state 968
 	','            shift, and enter state 877
 
 
@@ -22003,7 +22003,7 @@ State 877
 	QueryTerm      goto state 32
 	QuerySpec      goto state 33
 	Subquery       goto state 72
-	ScalarOptAsExp goto state 968
+	ScalarOptAsExp goto state 967
 	ScalarExp      goto state 74
 	ScalarSubExp   goto state 75
 	UnaryAddOrSubtractgoto state 76
@@ -22081,8 +22081,8 @@ State 878
 	'||'           reduce using rule 401
 	%eof           reduce using rule 401
 
-	JoinOnOrUsingClausegoto state 966
-	QueryPartitionClausegoto state 967
+	JoinOnOrUsingClausegoto state 965
+	QueryPartitionClausegoto state 966
 
 State 879
 
@@ -22167,7 +22167,7 @@ State 880
 	QueryTerm      goto state 32
 	QuerySpec      goto state 33
 	SelectField    goto state 68
-	SelectFieldCommalistgoto state 965
+	SelectFieldCommalistgoto state 964
 	CaseWhenOptAsExpgoto state 70
 	CaseWhenExp    goto state 71
 	Subquery       goto state 72
@@ -22428,7 +22428,7 @@ State 884
 	'||'           reduce using rule 399
 	%eof           reduce using rule 399
 
-	JoinOnOrUsingClausegoto state 964
+	JoinOnOrUsingClausegoto state 963
 
 State 885
 
@@ -22497,8 +22497,8 @@ State 885
 	'||'           reduce using rule 405
 	%eof           reduce using rule 405
 
-	JoinOnOrUsingClausegoto state 962
-	QueryPartitionClausegoto state 963
+	JoinOnOrUsingClausegoto state 961
+	QueryPartitionClausegoto state 962
 
 State 886
 
@@ -22515,7 +22515,7 @@ State 886
 
 	QueryTerm      goto state 636
 	QuerySpec      goto state 33
-	JoinRef        goto state 961
+	JoinRef        goto state 960
 	Table          goto state 638
 	Parameter      goto state 59
 
@@ -22582,7 +22582,7 @@ State 888
 
 	HierarchicalQueryClause -> 'CONNECT' 'BY' Nocycle SearchCondition 'START' . 'WITH' SearchCondition    (rule 430)
 
-	'WITH'         shift, and enter state 960
+	'WITH'         shift, and enter state 959
 
 
 State 889
@@ -22609,7 +22609,7 @@ State 889
 	QueryExp       goto state 66
 	QueryTerm      goto state 32
 	QuerySpec      goto state 33
-	SearchConditiongoto state 959
+	SearchConditiongoto state 958
 	Predicate      goto state 324
 	ComparisonPredicategoto state 325
 	BetweenPredicategoto state 326
@@ -22833,8 +22833,8 @@ State 893
 	QueryExp       goto state 66
 	QueryTerm      goto state 32
 	QuerySpec      goto state 33
-	Nocycle        goto state 957
-	SearchConditiongoto state 958
+	Nocycle        goto state 956
+	SearchConditiongoto state 957
 	Predicate      goto state 324
 	ComparisonPredicategoto state 325
 	BetweenPredicategoto state 326
@@ -23272,7 +23272,7 @@ State 901
 
 	ColumnRef -> 'NAME' '.' 'NAME' '(' . '+' ')'        (rule 555)
 
-	'+'            shift, and enter state 956
+	'+'            shift, and enter state 955
 
 
 State 902
@@ -23283,14 +23283,14 @@ State 902
 	ColumnRef -> 'NAME' '.' 'NAME' '.' . '*'            (rule 558)
 
 	'*'            shift, and enter state 707
-	'NAME'         shift, and enter state 955
+	'NAME'         shift, and enter state 954
 
 
 State 903
 
 	FunctionRef -> 'NAME' '.' 'NAME' '.' 'NAME' '(' FunArgs . ')'    (rule 510)
 
-	')'            shift, and enter state 954
+	')'            shift, and enter state 953
 
 
 State 904
@@ -23299,7 +23299,7 @@ State 904
 	ColumnRef -> 'NAME' '.' 'NAME' '.' 'NAME' '(' '+' . ')'    (rule 556)
 
 	'('            shift, and enter state 349
-	')'            shift, and enter state 953
+	')'            shift, and enter state 952
 	'+'            shift, and enter state 351
 	'-'            shift, and enter state 352
 	'APPROXNUM'    shift, and enter state 88
@@ -23370,7 +23370,7 @@ State 909
 	'FILTER_WITH'  shift, and enter state 487
 	%eof           reduce using rule 76
 
-	CreateIndexFiltergoto state 952
+	CreateIndexFiltergoto state 951
 
 State 910
 
@@ -23394,19 +23394,12 @@ State 911
 
 State 912
 
-	CreateIndexSpecitems -> 'JSON' '|' CreateIndexSpecitems .    (rule 88)
-
-	')'            reduce using rule 88
-
-
-State 913
-
-	CreateIndexSpecitems -> 'NAME' '|' CreateIndexSpecitems .    (rule 86)
+	CreateIndexSpecItems -> CreateIndexSpecColumn ',' CreateIndexSpecItems .    (rule 86)
 
 	')'            reduce using rule 86
 
 
-State 914
+State 913
 
 	CreateIndexDef -> 'CREATE' 'INDEX' IndexName 'ON' Table CreateIndexSpec CreateIndexNorm CreateIndexFilter .    (rule 61)
 
@@ -23416,7 +23409,7 @@ State 914
 	%eof           reduce using rule 61
 
 
-State 915
+State 914
 
 	TableConstraintDef -> 'UNIQUE' '(' ColumnCommalist ')' .    (rule 170)
 
@@ -23424,22 +23417,22 @@ State 915
 	','            reduce using rule 170
 
 
-State 916
+State 915
 
 	TableConstraintDef -> 'PRIMARY' 'KEY' '(' ColumnCommalist . ')'    (rule 171)
-
-	')'            shift, and enter state 951
-
-
-State 917
-
-	TableConstraintDef -> 'FOREIGN' 'KEY' '(' ColumnCommalist . ')' 'REFERENCES' Table    (rule 172)
-	TableConstraintDef -> 'FOREIGN' 'KEY' '(' ColumnCommalist . ')' 'REFERENCES' Table '(' ColumnCommalist ')'    (rule 173)
 
 	')'            shift, and enter state 950
 
 
-State 918
+State 916
+
+	TableConstraintDef -> 'FOREIGN' 'KEY' '(' ColumnCommalist . ')' 'REFERENCES' Table    (rule 172)
+	TableConstraintDef -> 'FOREIGN' 'KEY' '(' ColumnCommalist . ')' 'REFERENCES' Table '(' ColumnCommalist ')'    (rule 173)
+
+	')'            shift, and enter state 949
+
+
+State 917
 
 	TableConstraintDef -> 'CHECK' '(' SearchCondition ')' .    (rule 174)
 
@@ -23447,12 +23440,12 @@ State 918
 	','            reduce using rule 174
 
 
-State 919
+State 918
 
 	ColumnDefOpt -> 'REFERENCES' Table .                (rule 168)
 	ColumnDefOpt -> 'REFERENCES' Table . '(' ColumnCommalist ')'    (rule 169)
 
-	'('            shift, and enter state 949
+	'('            shift, and enter state 948
 	')'            reduce using rule 168
 	','            reduce using rule 168
 	'CHECK'        reduce using rule 168
@@ -23461,7 +23454,7 @@ State 919
 	'REFERENCES'   reduce using rule 168
 
 
-State 920
+State 919
 
 	ColumnDefOpt -> 'NOT' 'NULL' .                      (rule 159)
 	ColumnDefOpt -> 'NOT' 'NULL' . 'UNIQUE'             (rule 160)
@@ -23472,12 +23465,12 @@ State 920
 	'CHECK'        reduce using rule 159
 	'DEFAULT'      reduce using rule 159
 	'NOT'          reduce using rule 159
-	'PRIMARY'      shift, and enter state 947
+	'PRIMARY'      shift, and enter state 946
 	'REFERENCES'   reduce using rule 159
-	'UNIQUE'       shift, and enter state 948
+	'UNIQUE'       shift, and enter state 947
 
 
-State 921
+State 920
 
 	ColumnDefOpt -> 'DEFAULT' FunctionRef .             (rule 162)
 
@@ -23489,7 +23482,7 @@ State 921
 	'REFERENCES'   reduce using rule 162
 
 
-State 922
+State 921
 
 	ColumnDefOpt -> 'DEFAULT' Literal .                 (rule 163)
 
@@ -23501,7 +23494,7 @@ State 922
 	'REFERENCES'   reduce using rule 163
 
 
-State 923
+State 922
 
 	ColumnDefOpt -> 'DEFAULT' 'NAME' .                  (rule 164)
 	FunctionRef -> 'NAME' . '.' 'NAME' '.' 'NAME' '(' FunArgs ')'    (rule 510)
@@ -23518,7 +23511,7 @@ State 923
 	'REFERENCES'   reduce using rule 164
 
 
-State 924
+State 923
 
 	ColumnDefOpt -> 'DEFAULT' 'NULL' .                  (rule 165)
 
@@ -23530,7 +23523,7 @@ State 924
 	'REFERENCES'   reduce using rule 165
 
 
-State 925
+State 924
 
 	ColumnDefOpt -> 'DEFAULT' 'USER' .                  (rule 166)
 
@@ -23542,7 +23535,7 @@ State 925
 	'REFERENCES'   reduce using rule 166
 
 
-State 926
+State 925
 
 	ColumnDefOpt -> 'CHECK' '(' . SearchCondition ')'    (rule 167)
 
@@ -23566,7 +23559,7 @@ State 926
 	QueryExp       goto state 66
 	QueryTerm      goto state 32
 	QuerySpec      goto state 33
-	SearchConditiongoto state 946
+	SearchConditiongoto state 945
 	Predicate      goto state 324
 	ComparisonPredicategoto state 325
 	BetweenPredicategoto state 326
@@ -23587,7 +23580,7 @@ State 926
 	ColumnRef      goto state 81
 	Parameter      goto state 82
 
-State 927
+State 926
 
 	ColumnDefList -> ColumnDefList ColumnDefOpt .       (rule 158)
 
@@ -23599,23 +23592,23 @@ State 927
 	'REFERENCES'   reduce using rule 158
 
 
-State 928
+State 927
 
 	DataType -> 'NAME' '(' SgnNum . ')'                 (rule 561)
 	DataType -> 'NAME' '(' SgnNum . ',' SgnNum ')'      (rule 562)
 
-	')'            shift, and enter state 944
-	','            shift, and enter state 945
+	')'            shift, and enter state 943
+	','            shift, and enter state 944
 
 
-State 929
+State 928
 
 	SgnNum -> '-' . 'INTNUM'                            (rule 564)
 
-	'INTNUM'       shift, and enter state 943
+	'INTNUM'       shift, and enter state 942
 
 
-State 930
+State 929
 
 	SgnNum -> 'INTNUM' .                                (rule 563)
 
@@ -23623,7 +23616,7 @@ State 930
 	','            reduce using rule 563
 
 
-State 931
+State 930
 
 	UserRole -> 'DEFAULT' 'ROLE' 'ALL' 'EXCEPT' RoleList .    (rule 125)
 
@@ -23636,7 +23629,7 @@ State 931
 	%eof           reduce using rule 125
 
 
-State 932
+State 931
 
 	RoleList -> 'NAME' ',' RoleList .                   (rule 129)
 
@@ -23650,7 +23643,7 @@ State 932
 	%eof           reduce using rule 129
 
 
-State 933
+State 932
 
 	Quota -> 'QUOTA' 'INTNUM' 'NAME' 'ON' 'NAME' .      (rule 145)
 
@@ -23665,7 +23658,7 @@ State 933
 	%eof           reduce using rule 145
 
 
-State 934
+State 933
 
 	ProxyClause -> 'GRANT' 'CONNECT' 'THROUGH' 'ENTERPRISE' 'USERS' .    (rule 108)
 
@@ -23673,24 +23666,24 @@ State 934
 	%eof           reduce using rule 108
 
 
-State 935
+State 934
 
 	ProxyWith -> 'WITH' 'NO' . 'ROLES'                  (rule 115)
 
-	'ROLES'        shift, and enter state 942
+	'ROLES'        shift, and enter state 941
 
 
-State 936
+State 935
 
 	ProxyWith -> 'WITH' 'ROLE' . RoleList               (rule 116)
 	ProxyWith -> 'WITH' 'ROLE' . 'ALL' 'EXCEPT' RoleList    (rule 117)
 
-	'ALL'          shift, and enter state 941
+	'ALL'          shift, and enter state 940
 	'NAME'         shift, and enter state 765
 
-	RoleList       goto state 940
+	RoleList       goto state 939
 
-State 937
+State 936
 
 	ProxyClause -> 'REVOKE' 'CONNECT' 'THROUGH' 'ENTERPRISE' 'USERS' .    (rule 110)
 
@@ -23698,7 +23691,7 @@ State 937
 	%eof           reduce using rule 110
 
 
-State 938
+State 937
 
 	ProxyAuthReq -> 'AUTHENTICATION' 'REQUIRED' .       (rule 118)
 
@@ -23706,7 +23699,7 @@ State 938
 	%eof           reduce using rule 118
 
 
-State 939
+State 938
 
 	DbUserProxy -> ProxyWith ProxyAuthReq .             (rule 114)
 
@@ -23714,7 +23707,7 @@ State 939
 	%eof           reduce using rule 114
 
 
-State 940
+State 939
 
 	ProxyWith -> 'WITH' 'ROLE' RoleList .               (rule 116)
 
@@ -23723,14 +23716,14 @@ State 940
 	%eof           reduce using rule 116
 
 
-State 941
+State 940
 
 	ProxyWith -> 'WITH' 'ROLE' 'ALL' . 'EXCEPT' RoleList    (rule 117)
 
-	'EXCEPT'       shift, and enter state 984
+	'EXCEPT'       shift, and enter state 983
 
 
-State 942
+State 941
 
 	ProxyWith -> 'WITH' 'NO' 'ROLES' .                  (rule 115)
 
@@ -23739,7 +23732,7 @@ State 942
 	%eof           reduce using rule 115
 
 
-State 943
+State 942
 
 	SgnNum -> '-' 'INTNUM' .                            (rule 564)
 
@@ -23747,7 +23740,7 @@ State 943
 	','            reduce using rule 564
 
 
-State 944
+State 943
 
 	DataType -> 'NAME' '(' SgnNum ')' .                 (rule 561)
 
@@ -23759,34 +23752,34 @@ State 944
 	'REFERENCES'   reduce using rule 561
 
 
-State 945
+State 944
 
 	DataType -> 'NAME' '(' SgnNum ',' . SgnNum ')'      (rule 562)
 
-	'-'            shift, and enter state 929
-	'INTNUM'       shift, and enter state 930
+	'-'            shift, and enter state 928
+	'INTNUM'       shift, and enter state 929
 
-	SgnNum         goto state 983
+	SgnNum         goto state 982
 
-State 946
+State 945
 
 	ColumnDefOpt -> 'CHECK' '(' SearchCondition . ')'    (rule 167)
 	SearchCondition -> SearchCondition . 'OR' SearchCondition    (rule 439)
 	SearchCondition -> SearchCondition . 'AND' SearchCondition    (rule 440)
 
-	')'            shift, and enter state 982
+	')'            shift, and enter state 981
 	'AND'          shift, and enter state 566
 	'OR'           shift, and enter state 567
 
 
-State 947
+State 946
 
 	ColumnDefOpt -> 'NOT' 'NULL' 'PRIMARY' . 'KEY'      (rule 161)
 
-	'KEY'          shift, and enter state 981
+	'KEY'          shift, and enter state 980
 
 
-State 948
+State 947
 
 	ColumnDefOpt -> 'NOT' 'NULL' 'UNIQUE' .             (rule 160)
 
@@ -23798,25 +23791,25 @@ State 948
 	'REFERENCES'   reduce using rule 160
 
 
-State 949
+State 948
 
 	ColumnDefOpt -> 'REFERENCES' Table '(' . ColumnCommalist ')'    (rule 169)
 
 	'NAME'         shift, and enter state 271
 	'STRING'       shift, and enter state 272
 
-	ColumnCommalistgoto state 980
+	ColumnCommalistgoto state 979
 	Column         goto state 414
 
-State 950
+State 949
 
 	TableConstraintDef -> 'FOREIGN' 'KEY' '(' ColumnCommalist ')' . 'REFERENCES' Table    (rule 172)
 	TableConstraintDef -> 'FOREIGN' 'KEY' '(' ColumnCommalist ')' . 'REFERENCES' Table '(' ColumnCommalist ')'    (rule 173)
 
-	'REFERENCES'   shift, and enter state 979
+	'REFERENCES'   shift, and enter state 978
 
 
-State 951
+State 950
 
 	TableConstraintDef -> 'PRIMARY' 'KEY' '(' ColumnCommalist ')' .    (rule 171)
 
@@ -23824,7 +23817,7 @@ State 951
 	','            reduce using rule 171
 
 
-State 952
+State 951
 
 	CreateIndexDef -> 'CREATE' CreateIndexOpts 'INDEX' IndexName 'ON' Table CreateIndexSpec CreateIndexNorm CreateIndexFilter .    (rule 77)
 
@@ -23834,7 +23827,7 @@ State 952
 	%eof           reduce using rule 77
 
 
-State 953
+State 952
 
 	ColumnRef -> 'NAME' '.' 'NAME' '.' 'NAME' '(' '+' ')' .    (rule 556)
 
@@ -23893,7 +23886,7 @@ State 953
 	%eof           reduce using rule 556
 
 
-State 954
+State 953
 
 	FunctionRef -> 'NAME' '.' 'NAME' '.' 'NAME' '(' FunArgs ')' .    (rule 510)
 
@@ -23955,25 +23948,25 @@ State 954
 	%eof           reduce using rule 510
 
 
-State 955
+State 954
 
 	ColumnRef -> 'NAME' '.' 'NAME' '.' 'NAME' . 'JSON'    (rule 550)
 	ColumnRef -> 'NAME' '.' 'NAME' '.' 'NAME' .         (rule 553)
 	ColumnRef -> 'NAME' '.' 'NAME' '.' 'NAME' . '(' '+' ')'    (rule 556)
 
-	'('            shift, and enter state 978
+	'('            shift, and enter state 977
 	')'            reduce using rule 553
 	'JSON'         shift, and enter state 824
 
 
-State 956
+State 955
 
 	ColumnRef -> 'NAME' '.' 'NAME' '(' '+' . ')'        (rule 555)
 
 	')'            shift, and enter state 821
 
 
-State 957
+State 956
 
 	HierarchicalQueryClause -> 'START' 'WITH' SearchCondition 'CONNECT' 'BY' Nocycle . SearchCondition    (rule 428)
 
@@ -23997,7 +23990,7 @@ State 957
 	QueryExp       goto state 66
 	QueryTerm      goto state 32
 	QuerySpec      goto state 33
-	SearchConditiongoto state 977
+	SearchConditiongoto state 976
 	Predicate      goto state 324
 	ComparisonPredicategoto state 325
 	BetweenPredicategoto state 326
@@ -24018,7 +24011,7 @@ State 957
 	ColumnRef      goto state 81
 	Parameter      goto state 82
 
-State 958
+State 957
 
 	HierarchicalQueryClause -> 'START' 'WITH' SearchCondition 'CONNECT' 'BY' SearchCondition .    (rule 427)
 	SearchCondition -> SearchCondition . 'OR' SearchCondition    (rule 439)
@@ -24083,7 +24076,7 @@ State 958
 	%eof           reduce using rule 427
 
 
-State 959
+State 958
 
 	HierarchicalQueryClause -> 'CONNECT' 'BY' SearchCondition 'START' 'WITH' SearchCondition .    (rule 429)
 	SearchCondition -> SearchCondition . 'OR' SearchCondition    (rule 439)
@@ -24148,7 +24141,7 @@ State 959
 	%eof           reduce using rule 429
 
 
-State 960
+State 959
 
 	HierarchicalQueryClause -> 'CONNECT' 'BY' Nocycle SearchCondition 'START' 'WITH' . SearchCondition    (rule 430)
 
@@ -24172,7 +24165,7 @@ State 960
 	QueryExp       goto state 66
 	QueryTerm      goto state 32
 	QuerySpec      goto state 33
-	SearchConditiongoto state 976
+	SearchConditiongoto state 975
 	Predicate      goto state 324
 	ComparisonPredicategoto state 325
 	BetweenPredicategoto state 326
@@ -24193,7 +24186,7 @@ State 960
 	ColumnRef      goto state 81
 	Parameter      goto state 82
 
-State 961
+State 960
 
 	OuterJoin -> QueryPartitionClause 'NATURAL' OuterJoinType 'JOIN' JoinRef .    (rule 409)
 	OuterJoin -> QueryPartitionClause 'NATURAL' OuterJoinType 'JOIN' JoinRef . JoinOnOrUsingClause    (rule 410)
@@ -24260,10 +24253,10 @@ State 961
 	'||'           reduce using rule 409
 	%eof           reduce using rule 409
 
-	JoinOnOrUsingClausegoto state 974
-	QueryPartitionClausegoto state 975
+	JoinOnOrUsingClausegoto state 973
+	QueryPartitionClausegoto state 974
 
-State 962
+State 961
 
 	OuterJoin -> QueryPartitionClause OuterJoinType 'JOIN' JoinRef JoinOnOrUsingClause .    (rule 406)
 
@@ -24322,7 +24315,7 @@ State 962
 	%eof           reduce using rule 406
 
 
-State 963
+State 962
 
 	OuterJoin -> QueryPartitionClause OuterJoinType 'JOIN' JoinRef QueryPartitionClause .    (rule 407)
 	OuterJoin -> QueryPartitionClause OuterJoinType 'JOIN' JoinRef QueryPartitionClause . JoinOnOrUsingClause    (rule 408)
@@ -24385,9 +24378,9 @@ State 963
 	'||'           reduce using rule 407
 	%eof           reduce using rule 407
 
-	JoinOnOrUsingClausegoto state 973
+	JoinOnOrUsingClausegoto state 972
 
-State 964
+State 963
 
 	OuterJoin -> OuterJoinType 'JOIN' JoinRef QueryPartitionClause JoinOnOrUsingClause .    (rule 400)
 
@@ -24446,16 +24439,16 @@ State 964
 	%eof           reduce using rule 400
 
 
-State 965
+State 964
 
 	SelectFieldCommalist -> SelectFieldCommalist . ',' SelectField    (rule 334)
 	JoinOnOrUsingClause -> 'USING' '(' SelectFieldCommalist . ')'    (rule 396)
 
-	')'            shift, and enter state 972
+	')'            shift, and enter state 971
 	','            shift, and enter state 247
 
 
-State 966
+State 965
 
 	OuterJoin -> 'NATURAL' OuterJoinType 'JOIN' JoinRef JoinOnOrUsingClause .    (rule 402)
 
@@ -24514,7 +24507,7 @@ State 966
 	%eof           reduce using rule 402
 
 
-State 967
+State 966
 
 	OuterJoin -> 'NATURAL' OuterJoinType 'JOIN' JoinRef QueryPartitionClause .    (rule 403)
 	OuterJoin -> 'NATURAL' OuterJoinType 'JOIN' JoinRef QueryPartitionClause . JoinOnOrUsingClause    (rule 404)
@@ -24577,9 +24570,9 @@ State 967
 	'||'           reduce using rule 403
 	%eof           reduce using rule 403
 
-	JoinOnOrUsingClausegoto state 971
+	JoinOnOrUsingClausegoto state 970
 
-State 968
+State 967
 
 	ScalarExpCommalist -> ScalarExpCommalist ',' ScalarOptAsExp .    (rule 503)
 
@@ -24638,7 +24631,7 @@ State 968
 	%eof           reduce using rule 503
 
 
-State 969
+State 968
 
 	QueryPartitionClause -> 'PARTITION' 'BY' '(' ScalarExpCommalist ')' .    (rule 414)
 
@@ -24697,7 +24690,7 @@ State 969
 	%eof           reduce using rule 414
 
 
-State 970
+State 969
 
 	UpdateStatementPositioned -> 'UPDATE' Table 'SET' AssignmentCommalist 'WHERE' 'CURRENT' 'OF' Cursor Returning .    (rule 298)
 
@@ -24705,7 +24698,7 @@ State 970
 	%eof           reduce using rule 298
 
 
-State 971
+State 970
 
 	OuterJoin -> 'NATURAL' OuterJoinType 'JOIN' JoinRef QueryPartitionClause JoinOnOrUsingClause .    (rule 404)
 
@@ -24764,7 +24757,7 @@ State 971
 	%eof           reduce using rule 404
 
 
-State 972
+State 971
 
 	JoinOnOrUsingClause -> 'USING' '(' SelectFieldCommalist ')' .    (rule 396)
 
@@ -24823,7 +24816,7 @@ State 972
 	%eof           reduce using rule 396
 
 
-State 973
+State 972
 
 	OuterJoin -> QueryPartitionClause OuterJoinType 'JOIN' JoinRef QueryPartitionClause JoinOnOrUsingClause .    (rule 408)
 
@@ -24882,7 +24875,7 @@ State 973
 	%eof           reduce using rule 408
 
 
-State 974
+State 973
 
 	OuterJoin -> QueryPartitionClause 'NATURAL' OuterJoinType 'JOIN' JoinRef JoinOnOrUsingClause .    (rule 410)
 
@@ -24941,7 +24934,7 @@ State 974
 	%eof           reduce using rule 410
 
 
-State 975
+State 974
 
 	OuterJoin -> QueryPartitionClause 'NATURAL' OuterJoinType 'JOIN' JoinRef QueryPartitionClause .    (rule 411)
 	OuterJoin -> QueryPartitionClause 'NATURAL' OuterJoinType 'JOIN' JoinRef QueryPartitionClause . JoinOnOrUsingClause    (rule 412)
@@ -25004,9 +24997,9 @@ State 975
 	'||'           reduce using rule 411
 	%eof           reduce using rule 411
 
-	JoinOnOrUsingClausegoto state 990
+	JoinOnOrUsingClausegoto state 989
 
-State 976
+State 975
 
 	HierarchicalQueryClause -> 'CONNECT' 'BY' Nocycle SearchCondition 'START' 'WITH' SearchCondition .    (rule 430)
 	SearchCondition -> SearchCondition . 'OR' SearchCondition    (rule 439)
@@ -25071,7 +25064,7 @@ State 976
 	%eof           reduce using rule 430
 
 
-State 977
+State 976
 
 	HierarchicalQueryClause -> 'START' 'WITH' SearchCondition 'CONNECT' 'BY' Nocycle SearchCondition .    (rule 428)
 	SearchCondition -> SearchCondition . 'OR' SearchCondition    (rule 439)
@@ -25136,14 +25129,14 @@ State 977
 	%eof           reduce using rule 428
 
 
-State 978
+State 977
 
 	ColumnRef -> 'NAME' '.' 'NAME' '.' 'NAME' '(' . '+' ')'    (rule 556)
 
-	'+'            shift, and enter state 989
+	'+'            shift, and enter state 988
 
 
-State 979
+State 978
 
 	TableConstraintDef -> 'FOREIGN' 'KEY' '(' ColumnCommalist ')' 'REFERENCES' . Table    (rule 172)
 	TableConstraintDef -> 'FOREIGN' 'KEY' '(' ColumnCommalist ')' 'REFERENCES' . Table '(' ColumnCommalist ')'    (rule 173)
@@ -25152,17 +25145,17 @@ State 979
 	'PARAMETER'    shift, and enter state 61
 	'STRING'       shift, and enter state 62
 
-	Table          goto state 988
+	Table          goto state 987
 	Parameter      goto state 59
 
-State 980
+State 979
 
 	ColumnDefOpt -> 'REFERENCES' Table '(' ColumnCommalist . ')'    (rule 169)
 
-	')'            shift, and enter state 987
+	')'            shift, and enter state 986
 
 
-State 981
+State 980
 
 	ColumnDefOpt -> 'NOT' 'NULL' 'PRIMARY' 'KEY' .      (rule 161)
 
@@ -25174,7 +25167,7 @@ State 981
 	'REFERENCES'   reduce using rule 161
 
 
-State 982
+State 981
 
 	ColumnDefOpt -> 'CHECK' '(' SearchCondition ')' .    (rule 167)
 
@@ -25186,22 +25179,22 @@ State 982
 	'REFERENCES'   reduce using rule 167
 
 
-State 983
+State 982
 
 	DataType -> 'NAME' '(' SgnNum ',' SgnNum . ')'      (rule 562)
 
-	')'            shift, and enter state 986
+	')'            shift, and enter state 985
 
 
-State 984
+State 983
 
 	ProxyWith -> 'WITH' 'ROLE' 'ALL' 'EXCEPT' . RoleList    (rule 117)
 
 	'NAME'         shift, and enter state 765
 
-	RoleList       goto state 985
+	RoleList       goto state 984
 
-State 985
+State 984
 
 	ProxyWith -> 'WITH' 'ROLE' 'ALL' 'EXCEPT' RoleList .    (rule 117)
 
@@ -25210,7 +25203,7 @@ State 985
 	%eof           reduce using rule 117
 
 
-State 986
+State 985
 
 	DataType -> 'NAME' '(' SgnNum ',' SgnNum ')' .      (rule 562)
 
@@ -25222,7 +25215,7 @@ State 986
 	'REFERENCES'   reduce using rule 562
 
 
-State 987
+State 986
 
 	ColumnDefOpt -> 'REFERENCES' Table '(' ColumnCommalist ')' .    (rule 169)
 
@@ -25234,24 +25227,24 @@ State 987
 	'REFERENCES'   reduce using rule 169
 
 
-State 988
+State 987
 
 	TableConstraintDef -> 'FOREIGN' 'KEY' '(' ColumnCommalist ')' 'REFERENCES' Table .    (rule 172)
 	TableConstraintDef -> 'FOREIGN' 'KEY' '(' ColumnCommalist ')' 'REFERENCES' Table . '(' ColumnCommalist ')'    (rule 173)
 
-	'('            shift, and enter state 991
+	'('            shift, and enter state 990
 	')'            reduce using rule 172
 	','            reduce using rule 172
 
 
-State 989
+State 988
 
 	ColumnRef -> 'NAME' '.' 'NAME' '.' 'NAME' '(' '+' . ')'    (rule 556)
 
-	')'            shift, and enter state 953
+	')'            shift, and enter state 952
 
 
-State 990
+State 989
 
 	OuterJoin -> QueryPartitionClause 'NATURAL' OuterJoinType 'JOIN' JoinRef QueryPartitionClause JoinOnOrUsingClause .    (rule 412)
 
@@ -25310,24 +25303,24 @@ State 990
 	%eof           reduce using rule 412
 
 
-State 991
+State 990
 
 	TableConstraintDef -> 'FOREIGN' 'KEY' '(' ColumnCommalist ')' 'REFERENCES' Table '(' . ColumnCommalist ')'    (rule 173)
 
 	'NAME'         shift, and enter state 271
 	'STRING'       shift, and enter state 272
 
-	ColumnCommalistgoto state 992
+	ColumnCommalistgoto state 991
 	Column         goto state 414
 
-State 992
+State 991
 
 	TableConstraintDef -> 'FOREIGN' 'KEY' '(' ColumnCommalist ')' 'REFERENCES' Table '(' ColumnCommalist . ')'    (rule 173)
 
-	')'            shift, and enter state 993
+	')'            shift, and enter state 992
 
 
-State 993
+State 992
 
 	TableConstraintDef -> 'FOREIGN' 'KEY' '(' ColumnCommalist ')' 'REFERENCES' Table '(' ColumnCommalist ')' .    (rule 173)
 
@@ -25339,6 +25332,6 @@ State 993
 Grammar Totals
 -----------------------------------------------------------------------------
 Number of rules: 571
-Number of terminals: 163
-Number of non-terminals: 160
-Number of states: 994
+Number of terminals: 162
+Number of non-terminals: 161
+Number of states: 993
