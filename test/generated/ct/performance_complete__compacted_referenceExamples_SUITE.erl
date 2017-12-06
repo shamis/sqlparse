@@ -2,7 +2,7 @@
 %%% File        : performance_complete__compacted_referenceExamples_SUITE.erl
 %%% Description : Test Suite for rule: referenceExamples.
 %%%
-%%% Created     : 30.11.2017
+%%% Created     : 06.12.2017
 %%%-------------------------------------------------------------------
 -module(performance_complete__compacted_referenceExamples_SUITE).
 
@@ -46,6 +46,20 @@ all() ->
 %%--------------------------------------------------------------------
 
 test_compacted(_Config) ->
+    {ok, _} = sqlparse:parsetree_with_tokens("
+        -- =====================================================================
+        -- from book:          SQL Language Reference
+        --      chapter:       14 SQL Statements: CREATE LIBRARY to CREATE SCHEMA
+        --      section:       CREATE SCHEMA
+        -- ---------------------------------------------------------------------
+
+        CREATE SCHEMA AUTHORIZATION oe
+           CREATE TABLE new_product
+              (color VARCHAR2(10), quantity NUMBER)
+           CREATE VIEW new_product_view
+              AS SELECT color, quantity FROM new_product WHERE color = 'RED'
+           GRANT select ON new_product_view TO hr;
+    "),
     {ok, _} = sqlparse:parsetree_with_tokens("
         -- =====================================================================
         -- from book:          SQL Language Reference
