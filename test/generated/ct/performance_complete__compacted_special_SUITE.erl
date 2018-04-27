@@ -2,7 +2,7 @@
 %%% File        : performance_complete__compacted_special_SUITE.erl
 %%% Description : Test Suite for rule: special.
 %%%
-%%% Created     : 26.04.2018
+%%% Created     : 27.04.2018
 %%%-------------------------------------------------------------------
 -module(performance_complete__compacted_special_SUITE).
 
