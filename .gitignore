@@ -8,3 +8,9 @@ src/sql_lex.erl
 src/sqlparse.erl
 test/generated
 tmp
+erlang.mk
+ebin/
+sqlparser.d
+.erlang.mk/
+deps/
+sqlparse.d
