@@ -1426,9 +1426,9 @@ fun_arg_named -> identifier '=>' identifier : {'=>', '$1', '$3'}.
 fun_arg_named -> identifier '=>' literal    : {'=>', '$1', '$3'}.
 fun_arg_named -> identifier '=>' parameter  : {'=>', '$1', '$3'}.
 
-literal -> STRING    : unwrap_bin('$1').
-literal -> INTNUM    : unwrap_bin('$1').
-literal -> APPROXNUM : unwrap_bin('$1').
+literal -> STRING    : unwrap_const('$1').
+literal -> INTNUM    : unwrap_const('$1').
+literal -> APPROXNUM : unwrap_const('$1').
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% miscellaneous
@@ -1767,6 +1767,15 @@ unwrap(X) -> X.
 unwrap_bin({X, _}) when is_atom(X) -> atom_to_binary(X, unicode);
 unwrap_bin({_, _, X}) when is_list(X) -> list_to_binary([X]);
 unwrap_bin({_, _, X}) when is_atom(X) -> atom_to_binary(X, unicode).
+
+unwrap_const({'STRING', _, X}) when is_list(X) ->
+    const(list_to_binary(string:trim(X, both, "'")));
+unwrap_const({'INTNUM', _, X}) when is_list(X) ->
+    const(list_to_integer(X));
+unwrap_const({'APPROXNUM', _, X}) when is_list(X) ->
+    const(list_to_float(X)).
+
+const(V) -> {const, V}.
 
 strl2atom(Strs) ->
     list_to_atom(lists:flatten(
