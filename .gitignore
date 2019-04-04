@@ -14,3 +14,7 @@ sqlparser.d
 .erlang.mk/
 deps/
 sqlparse.d
+test/*.beam
+ct.coverdata
+logs/
+test/ct.cover.spec
