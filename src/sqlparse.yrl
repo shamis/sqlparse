@@ -303,7 +303,6 @@ Terminals
  EXTERNALLY
  FETCH
  FILTER_WITH
- FLOAT
  FORCE
  FOREIGN
  FOUND
@@ -1460,7 +1459,6 @@ data_type -> BLOB                                  : unwrap_bin('$1').
 data_type -> CHAR                                  : unwrap_bin('$1').
 data_type -> CLOB                                  : unwrap_bin('$1').
 data_type -> DATE                                  : unwrap_bin('$1').
-data_type -> FLOAT                                 : unwrap_bin('$1').
 data_type -> LONG                                  : unwrap_bin('$1').
 data_type -> LONG RAW                              : list_to_binary([unwrap_bin('$1')," ",unwrap_bin('$2')]).
 data_type -> NAME                                  : unwrap_bin('$1').
@@ -1474,7 +1472,6 @@ data_type -> UROWID                                : unwrap_bin('$1').
 data_type -> VARCHAR2                              : unwrap_bin('$1').
 data_type -> XMLTYPE                               : unwrap_bin('$1').
 data_type -> CHAR      '(' sgn_num ')'             : {unwrap_bin('$1'), '$3'}.
-data_type -> FLOAT     '(' sgn_num ')'             : {unwrap_bin('$1'), '$3'}.
 data_type -> NAME      '(' sgn_num ')'             : {unwrap_bin('$1'), '$3'}.
 data_type -> NCHAR     '(' sgn_num ')'             : {unwrap_bin('$1'), '$3'}.
 data_type -> NUMBER    '(' sgn_num ')'             : {unwrap_bin('$1'), '$3'}.
